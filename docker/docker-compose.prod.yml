@@ -86,7 +86,8 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpass}
       TZ: Asia/Tokyo
     volumes:
-      - ../../data/mysql:/var/lib/mysql  # データ永続化（Git管理外）
+      - ../../data/mysql:/var/lib/mysql    # データ永続化（Git管理外）
+      - ./mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro  # カスタム設定
     networks:
       - default
 

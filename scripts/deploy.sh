@@ -82,6 +82,12 @@ done
 echo ""
 echo "==> [2/4] docker compose"
 cd "$REPO_DIR"
+
+# Docker Compose の変数展開用に必要な環境変数をエクスポート
+# (env_file はコンテナ内用であり、compose ファイルの ${VAR} 展開には効かない)
+export DB_DATABASE DB_USERNAME DB_PASSWORD DB_ROOT_PASSWORD
+eval "$(grep -E '^(DB_DATABASE|DB_USERNAME|DB_PASSWORD|DB_ROOT_PASSWORD)=' "${REPO_DIR}/.env")"
+
 if [ "$BUILD_IMAGE" = true ]; then
   echo "--> Building images..."
   docker compose -f "$COMPOSE_FILE" build
