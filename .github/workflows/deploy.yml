@@ -73,7 +73,6 @@ jobs:
             postcss.config.js \
             tsconfig.json \
             phpunit.xml \
-            CLAUDE.md \
             README.md \
             .editorconfig \
             .gitattributes \
