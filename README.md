@@ -1,59 +1,123 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Bullema - 実包管理システム
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+日本国内の銃所持許可者向けの実包（弾丸）管理システム。
+出納履歴・残高・証憑を一元管理し、警察検査に耐える状態を継続的に維持します。
 
-## About Laravel
+## 主な機能
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **実包マスタ管理** - 実包種別の登録・管理
+- **出納イベント管理** - 譲受・消費・譲渡・廃棄等の記録（ハッシュチェーンで改ざん防止）
+- **残高管理** - リアルタイム残高算出
+- **証憑管理** - 領収書等の添付ファイル管理
+- **帳簿出力** - PDF/CSV形式での帳簿出力
+- **検査モード** - 警察検査対応の閲覧専用UI
+- **監査ログ** - 全操作の記録
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 技術スタック
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Backend**: Laravel 11 / PHP 8.4
+- **Frontend**: React 18 + TypeScript
+- **SPA連携**: Inertia.js
+- **UI**: shadcn/ui + Tailwind CSS
+- **Database**: MySQL 8.4
+- **Container**: Docker
 
-## Learning Laravel
+## 開発環境セットアップ
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 必要なもの
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.4+
+- Composer
+- Node.js 20+
+- Docker Desktop
 
-## Laravel Sponsors
+### セットアップ手順
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# リポジトリをクローン
+git clone git@github.com:Horita-Kaito/bullema.git
+cd bullema
 
-### Premium Partners
+# 依存関係インストール
+composer install
+npm install
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# 環境設定
+cp .env.example .env
+php artisan key:generate
 
-## Contributing
+# .env を編集してMySQL設定を有効化
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=bullema
+# DB_USERNAME=bullema
+# DB_PASSWORD=password
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# MySQL起動
+docker compose up -d
 
-## Code of Conduct
+# マイグレーション
+php artisan migrate
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# テストユーザー作成
+php artisan db:seed
 
-## Security Vulnerabilities
+# 開発サーバー起動
+composer run dev
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### ログイン情報（開発用）
 
-## License
+- **メール**: test@example.com
+- **パスワード**: password
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 開発サーバー
+
+- **アプリ**: http://localhost:8000
+- **Vite**: http://localhost:5173
+
+## テスト実行
+
+```bash
+php artisan test
+```
+
+## 本番デプロイ
+
+`main`ブランチへのpushで自動デプロイされます（GitHub Actions）。
+
+詳細は [デプロイスキル](.claude/skills/sakura-private-projects/deploy/bullema/SKILL.md) を参照。
+
+## ディレクトリ構成
+
+```
+app/
+├── Http/Controllers/    # コントローラー
+├── Http/Requests/       # バリデーション
+├── Models/              # Eloquentモデル
+├── UseCases/            # ユースケース/アクション
+├── Services/            # ドメインサービス
+└── Observers/           # モデルイベント
+
+resources/js/
+├── components/
+│   ├── ui/              # shadcn/ui
+│   ├── layouts/         # レイアウト
+│   └── shared/          # 共有コンポーネント
+├── features/            # 機能モジュール
+└── pages/               # Inertia.jsページ
+```
+
+## ドキュメント
+
+詳細設計は `docs/` を参照：
+
+- `docs/architecture/` - アーキテクチャ設計
+- `docs/database/` - データベース設計
+- `docs/api/` - API/ルート設計
+- `docs/frontend/` - フロントエンド設計
+
+## ライセンス
+
+Private

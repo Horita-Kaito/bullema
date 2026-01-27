@@ -1,0 +1,32 @@
+#
+# bullema - ローカル開発用 Docker Compose
+#
+# 使用方法:
+#   docker compose up -d
+#   php artisan migrate
+#   composer run dev
+#
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: bullema-local-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: bullema
+      MYSQL_USER: bullema
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpass
+      TZ: Asia/Tokyo
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql_data:
