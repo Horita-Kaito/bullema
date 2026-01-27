@@ -1,0 +1,145 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      build_image:
+        description: 'Rebuild Docker image'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Frontend build
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      # Backend build
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, json, bcmath, pdo_mysql
+          tools: composer:v2
+
+      - name: Install composer dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      # Package
+      - name: Create deployment package
+        run: |
+          tar -czf deploy.tar.gz \
+            app \
+            bootstrap \
+            config \
+            database \
+            docker \
+            docs \
+            public \
+            resources \
+            routes \
+            scripts \
+            storage \
+            vendor \
+            .claude \
+            artisan \
+            composer.json \
+            composer.lock \
+            package.json \
+            package-lock.json \
+            vite.config.ts \
+            postcss.config.js \
+            tsconfig.json \
+            phpunit.xml \
+            CLAUDE.md \
+            README.md \
+            .editorconfig \
+            .gitattributes \
+            .gitignore
+
+      # Deploy
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          BUILD_IMAGE: ${{ github.event.inputs.build_image || 'false' }}
+        run: |
+          # Transfer package
+          scp deploy.tar.gz ${SSH_USER}@${SSH_HOST}:~/srv/apps/bullema/
+
+          # Extract and deploy
+          BUILD_FLAG=""
+          if [ "$BUILD_IMAGE" = "true" ]; then
+            BUILD_FLAG="--build"
+          fi
+
+          ssh ${SSH_USER}@${SSH_HOST} "
+            cd ~/srv/apps/bullema
+            # Dockerが作成したファイルはroot権限のため、コンテナ経由で削除
+            if [ -d repo.old ]; then
+              docker run --rm -v ~/srv/apps/bullema/repo.old:/target alpine rm -rf /target/* /target/.[!.]* 2>/dev/null || true
+              rm -rf repo.old
+            fi
+            mv repo repo.old || true
+            mkdir -p repo
+            tar -xzf deploy.tar.gz -C repo
+            rm deploy.tar.gz
+            cd repo
+            ./scripts/deploy.sh ${BUILD_FLAG}
+          "
+
+      - name: Health Check
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          sleep 5
+          ssh ${SSH_USER}@${SSH_HOST} "curl -sf http://127.0.0.1/ > /dev/null && echo 'Health check passed' || exit 1"
+
+      - name: Cleanup on failure
+        if: failure()
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          ssh ${SSH_USER}@${SSH_HOST} "
+            cd ~/srv/apps/bullema
+            if [ -d repo.old ]; then
+              # 失敗したrepoを削除（Docker作成ファイル対応）
+              if [ -d repo ]; then
+                docker run --rm -v ~/srv/apps/bullema/repo:/target alpine rm -rf /target/* /target/.[!.]* 2>/dev/null || true
+                rm -rf repo
+              fi
+              mv repo.old repo
+              echo 'Rolled back to previous version'
+            fi
+          " || true
