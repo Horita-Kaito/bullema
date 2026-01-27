@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
     // Balances
     Route::prefix('balances')->name('balances.')->group(function () {
         Route::get('/', [BalanceController::class, 'index'])->name('index');
-        Route::get('/history', [BalanceController::class, 'history'])->name('history');
+        Route::get('/{ammunitionType}', [BalanceController::class, 'show'])->name('show');
     });
 
     // Attachments
