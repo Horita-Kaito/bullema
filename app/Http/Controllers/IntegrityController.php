@@ -28,7 +28,10 @@ class IntegrityController extends Controller
         $isValid = true;
 
         foreach ($transactions as $index => $transaction) {
-            $expectedHash = $this->hashService->calculateHash($transaction);
+            $expectedHash = $this->hashService->calculateHash(
+                $transaction->toArray(),
+                $transaction->previous_hash
+            );
             $hashValid = $transaction->record_hash === $expectedHash;
 
             // Check chain continuity

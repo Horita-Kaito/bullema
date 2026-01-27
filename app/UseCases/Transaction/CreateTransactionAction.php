@@ -52,6 +52,8 @@ class CreateTransactionAction
                 'counterparty_address' => $data['counterparty_address'] ?? null,
                 'counterparty_permit_number' => $data['counterparty_permit_number'] ?? null,
                 'disposal_method' => $data['disposal_method'] ?? null,
+                'correction_reason' => $data['correction_reason'] ?? null,
+                'original_event_id' => $data['original_event_id'] ?? null,
             ];
 
             // Calculate hash

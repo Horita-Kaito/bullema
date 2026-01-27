@@ -78,7 +78,8 @@ class TransactionEventController extends Controller
         $this->authorizeForUser($request->user(), $transaction);
 
         return Inertia::render('transactions/correct', [
-            'originalTransaction' => $transaction->load('ammunitionType'),
+            'transaction' => $transaction->load('ammunitionType'),
+            'ammunitionTypes' => AmmunitionType::forUser($request->user())->active()->get(),
         ]);
     }
 
