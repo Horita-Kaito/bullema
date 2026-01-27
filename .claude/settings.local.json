@@ -8,7 +8,31 @@
       "Bash(npx tailwindcss:*)",
       "Bash(chmod:*)",
       "Bash(npm run build:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Phase 1 - プロジェクト基盤構築\n\nLaravel 11 + Inertia.js + React 18 + TypeScript のプロジェクト基盤を構築\n\n## Backend\n- Laravel 11 プロジェクト作成\n- Inertia.js 統合\n- クリーンアーキテクチャ用ディレクトリ構造（UseCases, Services, Queries）\n- BalanceService 作成\n- DashboardController 作成\n- ルーティング設定（認証、実包マスタ、出納、残高等）\n\n## Frontend\n- React 18 + TypeScript セットアップ\n- Tailwind CSS v4 設定\n- shadcn/ui 互換の基本UIコンポーネント（Button, Input, Card, Table, Badge等）\n- レイアウトコンポーネント（AppLayout, AuthLayout, InspectionLayout）\n- TypeScript型定義（models.ts）\n- ユーティリティ関数とコンスタント\n\n## DevOps\n- Docker Compose 本番環境設定\n- GitHub Actions CI/CD ワークフロー\n- デプロイスクリプト（boisdepin参考）\n- 環境変数テンプレート\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Phase 2-9 - 主要機能の実装\n\n- 認証機能（ログイン/ログアウト）\n- 実包マスタ管理（CRUD）\n- 出納イベント管理（ハッシュチェーン対応）\n- 残高管理（リアルタイム計算）\n- 添付ファイル管理\n- 監査ログ・訂正イベント\n- 帳簿出力（PDF/CSV）\n- 検査モード（警察検査対応UI）\n- 整合性チェック機能\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: オブザーバーと訂正機能の修正\n\n- TransactionEventObserverを追加（削除禁止・監査ログ）\n- 訂正ページのProps修正\n- CreateTransactionActionにcorrection_reason対応を追加\n- IntegrityControllerのハッシュ検証修正\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\ntest: Phase 10 - フィーチャーテストの追加\n\n- 認証テスト（ログイン/ログアウト/リダイレクト）\n- 実包マスタテスト（CRUD/権限分離）\n- 出納イベントテスト（作成/ハッシュ/チェーン/削除禁止）\n- 残高テスト（計算/日付指定計算）\n- 検査モードテスト（各ページ表示）\n- 整合性チェックテスト\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nchore: 本番環境設定を軽量VPS向けに最適化\n\n- QUEUE_CONNECTION: database → sync\n- CACHE_STORE: database → file\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(gh auth status:*)",
+      "Bash(git push:*)",
+      "Bash(ssh:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(gh secret list:*)",
+      "Bash(gh secret set:*)",
+      "Bash(gh workflow run:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run watch:*)",
+      "Bash(gh run view:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: deploy.ymlから存在しないCLAUDE.mdを削除\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git checkout:*)",
+      "Bash(git commit:*)",
+      "Bash(pkill:*)",
+      "Bash(docker compose:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(npx shadcn@latest add dropdown-menu:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

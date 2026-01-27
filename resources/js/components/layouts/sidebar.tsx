@@ -9,6 +9,7 @@ import {
   History,
   Menu,
   X,
+  Shield,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -42,7 +43,7 @@ export function Sidebar() {
   };
 
   const NavLinks = () => (
-    <nav className="flex-1 space-y-1 px-2 py-4">
+    <nav className="flex-1 px-3 py-6 space-y-1">
       {navigation.map((item) => {
         const Icon = item.icon;
         const active = isActive(item.href);
@@ -51,17 +52,17 @@ export function Sidebar() {
             key={item.name}
             href={item.href}
             className={cn(
-              'group flex items-center px-3 py-2 text-sm font-medium rounded-md',
+              'group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200',
               active
-                ? 'bg-gray-100 text-gray-900'
-                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                ? 'bg-white/10 text-white shadow-sm'
+                : 'text-slate-300 hover:bg-white/5 hover:text-white'
             )}
             onClick={() => setMobileMenuOpen(false)}
           >
             <Icon
               className={cn(
-                'mr-3 h-5 w-5 flex-shrink-0',
-                active ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
+                'h-5 w-5 flex-shrink-0 transition-colors',
+                active ? 'text-indigo-400' : 'text-slate-400 group-hover:text-slate-300'
               )}
             />
             {item.name}
@@ -71,14 +72,27 @@ export function Sidebar() {
     </nav>
   );
 
+  const Logo = () => (
+    <div className="flex items-center gap-3 px-4">
+      <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30">
+        <Shield className="h-5 w-5 text-white" />
+      </div>
+      <div>
+        <span className="text-lg font-bold text-white tracking-tight">Bullema</span>
+        <p className="text-[10px] text-slate-400 -mt-0.5">実包管理システム</p>
+      </div>
+    </div>
+  );
+
   return (
     <>
       {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-0 left-0 z-40 p-4">
+      <div className="lg:hidden fixed top-4 left-4 z-40">
         <Button
           variant="outline"
           size="icon"
           onClick={() => setMobileMenuOpen(true)}
+          className="bg-white shadow-md border-slate-200"
         >
           <Menu className="h-5 w-5" />
         </Button>
@@ -87,7 +101,7 @@ export function Sidebar() {
       {/* Mobile menu overlay */}
       {mobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-40 bg-gray-600 bg-opacity-75"
+          className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -95,16 +109,17 @@ export function Sidebar() {
       {/* Mobile menu */}
       <div
         className={cn(
-          'lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white transform transition-transform duration-300 ease-in-out',
+          'lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-gradient-to-b from-slate-900 to-slate-800 transform transition-transform duration-300 ease-out shadow-2xl',
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        <div className="flex items-center justify-between h-16 px-4 border-b">
-          <span className="text-xl font-semibold">Bullema</span>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
+          <Logo />
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setMobileMenuOpen(false)}
+            className="text-slate-400 hover:text-white hover:bg-white/10"
           >
             <X className="h-5 w-5" />
           </Button>
@@ -114,11 +129,23 @@ export function Sidebar() {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-        <div className="flex flex-col flex-grow border-r bg-white">
-          <div className="flex items-center h-16 flex-shrink-0 px-4 border-b">
-            <span className="text-xl font-semibold">Bullema</span>
+        <div className="flex flex-col flex-grow bg-gradient-to-b from-slate-900 to-slate-800">
+          <div className="flex items-center h-16 flex-shrink-0 border-b border-white/10">
+            <Logo />
           </div>
           <NavLinks />
+
+          {/* Footer */}
+          <div className="p-4 border-t border-white/10">
+            <div className="px-3 py-2 rounded-lg bg-white/5">
+              <p className="text-xs text-slate-400">
+                警察検査対応
+              </p>
+              <p className="text-[10px] text-slate-500 mt-0.5">
+                改ざん防止ハッシュチェーン搭載
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </>

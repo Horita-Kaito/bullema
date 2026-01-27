@@ -14,6 +14,7 @@ export interface PageProps {
     success?: string;
     error?: string;
   };
+  [key: string]: unknown;
 }
 
 export type { User, AmmunitionType, TransactionEvent, Attachment, AuditLog, EventType, PaginatedResponse, Balance } from './models';
