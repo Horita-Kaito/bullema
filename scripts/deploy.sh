@@ -88,18 +88,20 @@ cd "$REPO_DIR"
 export DB_DATABASE DB_USERNAME DB_PASSWORD DB_ROOT_PASSWORD
 eval "$(grep -E '^(DB_DATABASE|DB_USERNAME|DB_PASSWORD|DB_ROOT_PASSWORD)=' "${REPO_DIR}/.env")"
 
+PROJECT_NAME="bullema"
+
 if [ "$BUILD_IMAGE" = true ]; then
   echo "--> Building images..."
-  docker compose -f "$COMPOSE_FILE" build
+  docker compose -p "$PROJECT_NAME" -f "$COMPOSE_FILE" build
 fi
 # MySQLは維持、nginx/appは強制再作成（ボリュームマウント更新のため）
-docker compose -f "$COMPOSE_FILE" up -d mysql
-docker compose -f "$COMPOSE_FILE" up -d --force-recreate app nginx
+docker compose -p "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d mysql
+docker compose -p "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d --force-recreate app nginx
 
 # ストレージ権限修正（www-dataが書き込めるように）
 echo "--> Fixing storage permissions..."
-docker compose -f "$COMPOSE_FILE" exec -T app chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-docker compose -f "$COMPOSE_FILE" exec -T app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+docker compose -p "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T app chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+docker compose -p "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # ----------------------------------------------------------
 # 3. MySQL 接続待ち
@@ -109,7 +111,7 @@ echo "==> [3/4] wait mysql ready (max 60s)"
 timeout=60
 start_ts="$(date +%s)"
 while true; do
-  if docker compose -f "$COMPOSE_FILE" exec -T app php -r 'exit((@fsockopen(getenv("DB_HOST") ?: "mysql", 3306, $e, $s, 1)) ? 0 : 1);' 2>/dev/null; then
+  if docker compose -p "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T app php -r 'exit((@fsockopen(getenv("DB_HOST") ?: "mysql", 3306, $e, $s, 1)) ? 0 : 1);' 2>/dev/null; then
     echo "==> MySQL is reachable"
     break
   fi
@@ -133,7 +135,7 @@ for cmd in \
   "php artisan view:clear"
 do
   echo "--> $cmd"
-  docker compose -f "$COMPOSE_FILE" exec -T app sh -lc "$cmd"
+  docker compose -p "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T app sh -lc "$cmd"
 done
 
 # ----------------------------------------------------------

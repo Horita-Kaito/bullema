@@ -5,33 +5,56 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FormEvent } from 'react';
-import { LogIn, Mail, Lock } from 'lucide-react';
+import { UserPlus, Mail, Lock, User } from 'lucide-react';
 
-export default function Login() {
+export default function Register() {
   const { data, setData, post, processing, errors } = useForm({
+    name: '',
     email: '',
     password: '',
-    remember: false,
+    password_confirmation: '',
   });
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    post('/login');
+    post('/register');
   };
 
   return (
     <AuthLayout>
-      <Head title="ログイン" />
+      <Head title="新規登録" />
 
       <Card className="border-0 shadow-xl shadow-slate-200/50">
         <CardHeader className="space-y-1 pb-6">
-          <CardTitle className="text-2xl font-bold text-center">ログイン</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">新規登録</CardTitle>
           <CardDescription className="text-center">
-            アカウント情報を入力してください
+            アカウントを作成してください
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-slate-700">
+                お名前
+              </Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input
+                  id="name"
+                  type="text"
+                  value={data.name}
+                  onChange={(e) => setData('name', e.target.value)}
+                  autoComplete="name"
+                  autoFocus
+                  className="pl-10 h-11"
+                  placeholder="山田 太郎"
+                />
+              </div>
+              {errors.name && (
+                <p className="text-sm text-red-600">{errors.name}</p>
+              )}
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="email" className="text-slate-700">
                 メールアドレス
@@ -44,7 +67,6 @@ export default function Login() {
                   value={data.email}
                   onChange={(e) => setData('email', e.target.value)}
                   autoComplete="email"
-                  autoFocus
                   className="pl-10 h-11"
                   placeholder="you@example.com"
                 />
@@ -65,7 +87,7 @@ export default function Login() {
                   type="password"
                   value={data.password}
                   onChange={(e) => setData('password', e.target.value)}
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   className="pl-10 h-11"
                   placeholder="••••••••"
                 />
@@ -75,17 +97,22 @@ export default function Login() {
               )}
             </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="remember"
-                checked={data.remember}
-                onChange={(e) => setData('remember', e.target.checked)}
-                className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
-              />
-              <Label htmlFor="remember" className="text-sm font-normal text-slate-600">
-                ログイン状態を保持する
+            <div className="space-y-2">
+              <Label htmlFor="password_confirmation" className="text-slate-700">
+                パスワード（確認）
               </Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input
+                  id="password_confirmation"
+                  type="password"
+                  value={data.password_confirmation}
+                  onChange={(e) => setData('password_confirmation', e.target.value)}
+                  autoComplete="new-password"
+                  className="pl-10 h-11"
+                  placeholder="••••••••"
+                />
+              </div>
             </div>
 
             <Button
@@ -96,23 +123,23 @@ export default function Login() {
               {processing ? (
                 <span className="flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ログイン中...
+                  登録中...
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
-                  <LogIn className="h-4 w-4" />
-                  ログイン
+                  <UserPlus className="h-4 w-4" />
+                  アカウントを作成
                 </span>
               )}
             </Button>
 
             <p className="text-center text-sm text-slate-600">
-              アカウントをお持ちでないですか？{' '}
+              すでにアカウントをお持ちですか？{' '}
               <Link
-                href="/register"
+                href="/login"
                 className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
               >
-                新規登録
+                ログイン
               </Link>
             </p>
           </form>
