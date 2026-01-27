@@ -12,20 +12,20 @@ interface Props {
   };
 }
 
-export default function AmmunitionTypesIndex({ ammunitionTypes, filters }: Props) {
+export default function AmmunitionTypesIndex({ ammunitionTypes }: Props) {
   return (
     <AppLayout title="実包マスタ">
       <Head title="実包マスタ" />
 
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold">実包マスタ</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-xl md:text-2xl font-bold text-slate-900">実包マスタ</h1>
+            <p className="text-sm text-slate-500 mt-1">
               実包の種別・口径を管理します
             </p>
           </div>
-          <Button asChild>
+          <Button asChild className="w-full sm:w-auto">
             <Link href="/ammunition-types/create">
               <Plus className="h-4 w-4 mr-2" />
               新規登録
