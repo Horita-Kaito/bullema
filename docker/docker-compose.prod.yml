@@ -40,7 +40,7 @@ services:
     labels:
       # Traefik ルーティング設定
       - traefik.enable=true
-      - traefik.http.routers.bullema.rule=Host(`bullema.example.com`)
+      - traefik.http.routers.bullema.rule=Host(`bullema.wolf-holdings.co.jp`)
       - traefik.http.routers.bullema.entrypoints=websecure
       - traefik.http.routers.bullema.tls.certresolver=letsencrypt
       - traefik.http.services.bullema.loadbalancer.server.port=80
