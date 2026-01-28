@@ -86,6 +86,10 @@ class AmmunitionTypeTest extends TestCase
             ->get('/ammunition-types');
 
         $response->assertStatus(200);
-        $response->assertSee($ownType->caliber);
+        // Inertia responses contain props as JSON
+        $response->assertInertia(fn ($page) => $page
+            ->component('ammunition-types/index')
+            ->has('ammunitionTypes.data', 1)
+        );
     }
 }
