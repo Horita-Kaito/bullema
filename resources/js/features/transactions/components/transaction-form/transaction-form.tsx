@@ -46,7 +46,7 @@ export function TransactionForm({ ammunitionTypes }: TransactionFormProps) {
             id="ammunition_type_id"
             value={data.ammunition_type_id}
             onChange={(e) => setData('ammunition_type_id', e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base"
           >
             <option value="">選択してください</option>
             {ammunitionTypes.map((type) => (
@@ -67,7 +67,7 @@ export function TransactionForm({ ammunitionTypes }: TransactionFormProps) {
             id="event_type"
             value={data.event_type}
             onChange={(e) => setData('event_type', e.target.value as EventType)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base"
           >
             <option value="">選択してください</option>
             {availableEventTypes.map((type) => (

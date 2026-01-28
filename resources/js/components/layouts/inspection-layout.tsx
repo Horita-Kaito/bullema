@@ -33,27 +33,28 @@ export function InspectionLayout({ children }: PropsWithChildren) {
   return (
     <div className="min-h-screen bg-slate-50 print:bg-white">
       {/* Header (hidden on print) */}
-      <header className="bg-blue-900 text-white py-4 px-6 print:hidden">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
+      <header className="bg-blue-900 text-white py-4 px-4 md:px-6 print:hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 max-w-7xl mx-auto">
           <div>
-            <h1 className="text-xl font-bold">実包管理帳簿</h1>
+            <h1 className="text-lg md:text-xl font-bold">実包管理帳簿</h1>
             <p className="text-sm text-blue-200">検査モード</p>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm">{formatDate(new Date())}</span>
+          <div className="flex items-center gap-2 md:gap-4">
+            <span className="text-sm hidden md:inline">{formatDate(new Date())}</span>
             <Button
               variant="outline"
               size="sm"
-              className="text-white border-white hover:bg-blue-800"
+              className="text-white border-white hover:bg-blue-800 flex-1 md:flex-none"
               onClick={() => window.print()}
             >
               <Printer className="h-4 w-4 mr-1" />
               印刷
             </Button>
-            <Button variant="secondary" size="sm" asChild>
+            <Button variant="secondary" size="sm" asChild className="flex-1 md:flex-none">
               <Link href="/">
                 <ArrowLeft className="h-4 w-4 mr-1" />
-                通常モードに戻る
+                <span className="hidden md:inline">通常モードに戻る</span>
+                <span className="md:hidden">戻る</span>
               </Link>
             </Button>
           </div>
@@ -61,9 +62,9 @@ export function InspectionLayout({ children }: PropsWithChildren) {
       </header>
 
       {/* Tab navigation (hidden on print) */}
-      <nav className="bg-white border-b print:hidden">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex gap-1 py-2">
+      <nav className="bg-white border-b print:hidden overflow-x-auto">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="flex gap-1 py-2 min-w-max">
             <TabLink href="/inspection">概要</TabLink>
             <TabLink href="/inspection/balance">現在残高</TabLink>
             <TabLink href="/inspection/ledger">出納帳簿</TabLink>

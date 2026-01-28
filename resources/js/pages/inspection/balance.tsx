@@ -50,7 +50,7 @@ export default function InspectionBalance({ balances, totalBalance, printDate }:
         {/* Balance table */}
         <Card>
           <CardHeader>
-            <CardTitle>残高内訳</CardTitle>
+            <CardTitle className="text-lg">残高内訳</CardTitle>
           </CardHeader>
           <CardContent>
             {balances.length === 0 ? (
@@ -58,44 +58,76 @@ export default function InspectionBalance({ balances, totalBalance, printDate }:
                 登録されている実包がありません
               </p>
             ) : (
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-3 font-semibold">種別</th>
-                    <th className="text-left py-3 font-semibold">口径</th>
-                    <th className="text-left py-3 font-semibold">メーカー</th>
-                    <th className="text-right py-3 font-semibold">残高</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <>
+                {/* Mobile view */}
+                <div className="md:hidden space-y-3">
                   {balances.map((balance) => (
-                    <tr key={balance.ammunition_type.id} className="border-b">
-                      <td className="py-3">{balance.ammunition_type.category}</td>
-                      <td className="py-3">{balance.ammunition_type.caliber}</td>
-                      <td className="py-3 text-muted-foreground">
-                        {balance.ammunition_type.manufacturer || '-'}
-                      </td>
-                      <td className="py-3 text-right font-bold text-lg">
-                        {formatNumber(balance.balance)}
+                    <div key={balance.ammunition_type.id} className="p-3 bg-slate-50 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">{balance.ammunition_type.caliber}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {balance.ammunition_type.category}
+                            {balance.ammunition_type.manufacturer && ` / ${balance.ammunition_type.manufacturer}`}
+                          </p>
+                        </div>
+                        <p className="text-xl font-bold">
+                          {formatNumber(balance.balance)}
+                          <span className="text-sm font-normal text-muted-foreground ml-1">発</span>
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="p-3 bg-slate-100 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <p className="font-semibold">合計</p>
+                      <p className="text-xl font-bold">
+                        {formatNumber(totalBalance)}
+                        <span className="text-sm font-normal text-muted-foreground ml-1">発</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                {/* Desktop view */}
+                <table className="w-full hidden md:table">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 font-semibold">種別</th>
+                      <th className="text-left py-3 font-semibold">口径</th>
+                      <th className="text-left py-3 font-semibold">メーカー</th>
+                      <th className="text-right py-3 font-semibold">残高</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {balances.map((balance) => (
+                      <tr key={balance.ammunition_type.id} className="border-b">
+                        <td className="py-3">{balance.ammunition_type.category}</td>
+                        <td className="py-3">{balance.ammunition_type.caliber}</td>
+                        <td className="py-3 text-muted-foreground">
+                          {balance.ammunition_type.manufacturer || '-'}
+                        </td>
+                        <td className="py-3 text-right font-bold text-lg">
+                          {formatNumber(balance.balance)}
+                          <span className="text-sm font-normal text-muted-foreground ml-1">
+                            発
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr className="bg-muted/50">
+                      <td colSpan={3} className="py-3 font-semibold">合計</td>
+                      <td className="py-3 text-right font-bold text-xl">
+                        {formatNumber(totalBalance)}
                         <span className="text-sm font-normal text-muted-foreground ml-1">
                           発
                         </span>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr className="bg-muted/50">
-                    <td colSpan={3} className="py-3 font-semibold">合計</td>
-                    <td className="py-3 text-right font-bold text-xl">
-                      {formatNumber(totalBalance)}
-                      <span className="text-sm font-normal text-muted-foreground ml-1">
-                        発
-                      </span>
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
+                  </tfoot>
+                </table>
+              </>
             )}
           </CardContent>
         </Card>

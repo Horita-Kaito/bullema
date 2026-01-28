@@ -59,10 +59,36 @@ export default function InspectionAttachments({ attachments, printDate }: Props)
         ) : (
           <Card>
             <CardHeader>
-              <CardTitle>添付ファイル ({attachments.length}件)</CardTitle>
+              <CardTitle className="text-lg">添付ファイル ({attachments.length}件)</CardTitle>
             </CardHeader>
             <CardContent>
-              <table className="w-full">
+              {/* Mobile view */}
+              <div className="md:hidden space-y-3">
+                {attachments.map((attachment) => (
+                  <div key={attachment.id} className="p-3 bg-slate-50 rounded-lg">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        {getFileIcon(attachment.mime_type)}
+                        <span className="truncate font-medium">{attachment.original_name}</span>
+                      </div>
+                      <Button variant="ghost" size="sm" asChild className="flex-shrink-0 print:hidden">
+                        <a href={`/attachments/${attachment.id}/download`}>
+                          <Download className="h-4 w-4" />
+                        </a>
+                      </Button>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <span>
+                        {EVENT_TYPE_LABELS[attachment.transaction_event.event_type]}
+                        {' '}({formatDate(attachment.transaction_event.event_date)})
+                      </span>
+                      <span>{formatFileSize(attachment.file_size)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Desktop view */}
+              <table className="w-full hidden md:table">
                 <thead>
                   <tr className="border-b">
                     <th className="text-left py-3 font-semibold">ファイル名</th>

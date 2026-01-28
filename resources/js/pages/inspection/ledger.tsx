@@ -51,8 +51,8 @@ export default function InspectionLedger({ ledgerGroups, printDate }: Props) {
           ledgerGroups.map((group) => (
             <Card key={group.ammunition_type.id} className="print:break-inside-avoid">
               <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>
+                <CardTitle className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                  <span className="text-base md:text-lg">
                     {group.ammunition_type.category} / {group.ammunition_type.caliber}
                     {group.ammunition_type.manufacturer && (
                       <span className="text-sm font-normal text-muted-foreground ml-2">
@@ -60,7 +60,7 @@ export default function InspectionLedger({ ledgerGroups, printDate }: Props) {
                       </span>
                     )}
                   </span>
-                  <span className="text-lg">
+                  <span className="text-base md:text-lg">
                     現在残高: <strong>{formatNumber(group.current_balance)}</strong>発
                   </span>
                 </CardTitle>
@@ -71,37 +71,62 @@ export default function InspectionLedger({ ledgerGroups, printDate }: Props) {
                     出納記録がありません
                   </p>
                 ) : (
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left py-2 w-24">日付</th>
-                        <th className="text-left py-2 w-20">種別</th>
-                        <th className="text-left py-2">内容</th>
-                        <th className="text-right py-2 w-20">増減</th>
-                        <th className="text-right py-2 w-20">残高</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <>
+                    {/* Mobile view */}
+                    <div className="md:hidden space-y-3">
                       {group.transactions.map((transaction) => (
-                        <tr key={transaction.id} className="border-b">
-                          <td className="py-2">{formatDate(transaction.event_date)}</td>
-                          <td className="py-2">{EVENT_TYPE_LABELS[transaction.event_type]}</td>
-                          <td className="py-2 text-muted-foreground">
-                            {getTransactionDetails(transaction)}
-                          </td>
-                          <td className={`py-2 text-right font-medium ${
-                            transaction.quantity > 0 ? 'text-green-600' : 'text-red-600'
-                          }`}>
-                            {transaction.quantity > 0 ? '+' : ''}
-                            {formatNumber(transaction.quantity)}
-                          </td>
-                          <td className="py-2 text-right font-bold">
-                            {formatNumber(transaction.running_balance)}
-                          </td>
-                        </tr>
+                        <div key={transaction.id} className="p-3 bg-slate-50 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium">{EVENT_TYPE_LABELS[transaction.event_type]}</span>
+                              <span className="text-xs text-muted-foreground">{formatDate(transaction.event_date)}</span>
+                            </div>
+                            <span className={`font-medium ${
+                              transaction.quantity > 0 ? 'text-green-600' : 'text-red-600'
+                            }`}>
+                              {transaction.quantity > 0 ? '+' : ''}{formatNumber(transaction.quantity)}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground truncate mr-2">{getTransactionDetails(transaction)}</span>
+                            <span className="font-bold whitespace-nowrap">残: {formatNumber(transaction.running_balance)}</span>
+                          </div>
+                        </div>
                       ))}
-                    </tbody>
-                  </table>
+                    </div>
+                    {/* Desktop view */}
+                    <table className="w-full text-sm hidden md:table">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2 w-24">日付</th>
+                          <th className="text-left py-2 w-20">種別</th>
+                          <th className="text-left py-2">内容</th>
+                          <th className="text-right py-2 w-20">増減</th>
+                          <th className="text-right py-2 w-20">残高</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.transactions.map((transaction) => (
+                          <tr key={transaction.id} className="border-b">
+                            <td className="py-2">{formatDate(transaction.event_date)}</td>
+                            <td className="py-2">{EVENT_TYPE_LABELS[transaction.event_type]}</td>
+                            <td className="py-2 text-muted-foreground">
+                              {getTransactionDetails(transaction)}
+                            </td>
+                            <td className={`py-2 text-right font-medium ${
+                              transaction.quantity > 0 ? 'text-green-600' : 'text-red-600'
+                            }`}>
+                              {transaction.quantity > 0 ? '+' : ''}
+                              {formatNumber(transaction.quantity)}
+                            </td>
+                            <td className="py-2 text-right font-bold">
+                              {formatNumber(transaction.running_balance)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </>
                 )}
               </CardContent>
             </Card>

@@ -27,17 +27,17 @@ export default function InspectionIndex({
         {/* User info */}
         <Card>
           <CardHeader>
-            <CardTitle>所持許可者情報</CardTitle>
+            <CardTitle className="text-lg">所持許可者情報</CardTitle>
           </CardHeader>
           <CardContent>
-            <dl className="grid grid-cols-2 gap-4">
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <dt className="text-sm text-muted-foreground">氏名</dt>
                 <dd className="font-medium">{user.name}</dd>
               </div>
               <div>
                 <dt className="text-sm text-muted-foreground">メールアドレス</dt>
-                <dd className="font-medium">{user.email}</dd>
+                <dd className="font-medium break-all">{user.email}</dd>
               </div>
             </dl>
           </CardContent>
@@ -84,7 +84,7 @@ export default function InspectionIndex({
         {/* Balance breakdown */}
         <Card>
           <CardHeader>
-            <CardTitle>実包種別ごとの残高</CardTitle>
+            <CardTitle className="text-lg">実包種別ごとの残高</CardTitle>
           </CardHeader>
           <CardContent>
             {balances.length === 0 ? (
@@ -92,34 +92,55 @@ export default function InspectionIndex({
                 登録されている実包がありません
               </p>
             ) : (
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2">種別</th>
-                    <th className="text-left py-2">口径</th>
-                    <th className="text-left py-2">メーカー</th>
-                    <th className="text-right py-2">残高</th>
-                    <th className="text-left py-2">最終更新</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <>
+                {/* Mobile view */}
+                <div className="md:hidden space-y-3">
                   {balances.map((balance) => (
-                    <tr key={balance.ammunition_type.id} className="border-b">
-                      <td className="py-2">{balance.ammunition_type.category}</td>
-                      <td className="py-2">{balance.ammunition_type.caliber}</td>
-                      <td className="py-2 text-muted-foreground">
-                        {balance.ammunition_type.manufacturer || '-'}
-                      </td>
-                      <td className="py-2 text-right font-medium">
-                        {formatNumber(balance.balance)}発
-                      </td>
-                      <td className="py-2">
-                        {balance.last_event_date ? formatDate(balance.last_event_date) : '-'}
-                      </td>
-                    </tr>
+                    <div key={balance.ammunition_type.id} className="p-3 bg-slate-50 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <p className="font-medium">{balance.ammunition_type.caliber}</p>
+                          <p className="text-sm text-muted-foreground">{balance.ammunition_type.category}</p>
+                        </div>
+                        <p className="text-xl font-bold">{formatNumber(balance.balance)}発</p>
+                      </div>
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>{balance.ammunition_type.manufacturer || '-'}</span>
+                        <span>{balance.last_event_date ? formatDate(balance.last_event_date) : '-'}</span>
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+                {/* Desktop view */}
+                <table className="w-full hidden md:table">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-2">種別</th>
+                      <th className="text-left py-2">口径</th>
+                      <th className="text-left py-2">メーカー</th>
+                      <th className="text-right py-2">残高</th>
+                      <th className="text-left py-2">最終更新</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {balances.map((balance) => (
+                      <tr key={balance.ammunition_type.id} className="border-b">
+                        <td className="py-2">{balance.ammunition_type.category}</td>
+                        <td className="py-2">{balance.ammunition_type.caliber}</td>
+                        <td className="py-2 text-muted-foreground">
+                          {balance.ammunition_type.manufacturer || '-'}
+                        </td>
+                        <td className="py-2 text-right font-medium">
+                          {formatNumber(balance.balance)}発
+                        </td>
+                        <td className="py-2">
+                          {balance.last_event_date ? formatDate(balance.last_event_date) : '-'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
             )}
           </CardContent>
         </Card>
